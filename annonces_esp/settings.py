@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 #configuration database
+from decouple import config, Csv
 import os
 import pymysql
 pymysql.install_as_MySQLdb()
@@ -24,14 +25,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-99o5!%6gwyl2a6ff5bc^d*ebkfe_d#ovpb8-cql=97n0i58_pv'
+SECRET_KEY = config('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
-
+print('=====',ALLOWED_HOSTS)
 # Application definition
 
 INSTALLED_APPS = [
@@ -186,7 +186,9 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "almoumna123@gmail.com"
-EMAIL_HOST_PASSWORD = "smwkgieeohhcgvzp"
+# EMAIL_HOST_USER = "almoumna123@gmail.com"
+# EMAIL_HOST_PASSWORD = "smwkgieeohhcgvzp"
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-SITE_URL = "http://127.0.0.1:8000"
+SITE_URL = config('SITE_URL')
