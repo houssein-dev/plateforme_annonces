@@ -1,0 +1,124 @@
+{% extends base_template %}
+
+{% block content %}
+
+<style>
+    .preview-img {
+        width: 400px;
+        height: 400px;
+        object-fit: cover;
+        margin: 5px;
+        border-radius: 8px;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    .form-select {
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    .btn-success {
+        padding: 12px 25px;
+        font-size: 18px;
+        border-radius: 10px;
+    }
+
+    .card {
+        border-radius: 15px;
+    }
+
+    .input-group-text {
+        background: #f8f9fa;
+        border-radius: 10px 0 0 10px;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white text-center">
+            <h4><i class="fas fa-plus-circle"></i> Publier une annonce</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+
+                <!-- Titre de l'annonce -->
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-heading"></i> Titre de l'annonce</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-pen"></i></span>
+                        {{ form.titre }}
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-align-left"></i> Description</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-file-alt"></i></span>
+                        {{ form.description }}
+                    </div>
+                </div>
+
+                <!-- Prix -->
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-dollar-sign"></i> Prix</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-euro-sign"></i></span>
+                        {{ form.prix }}
+                    </div>
+                </div>
+
+                <!-- Catégorie -->
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-tags"></i> Catégorie</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-list"></i></span>
+                        {{ form.categorie }}
+                    </div>
+                </div>
+
+                <!-- Upload d'images avec aperçu -->
+                <div class="mb-3">
+                    <label for="images" class="form-label"><i class="fas fa-images"></i> Ajouter des images :</label>
+                    <input type="file" name="images" id="imageUpload" class="form-control" multiple accept="image/*">
+                    <div id="imagePreview" class="d-flex flex-wrap mt-3"></div>
+                </div>
+
+                <!-- Bouton de soumission stylisé -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check-circle"></i> Publier l'annonce
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('imageUpload').addEventListener('change', function(event) {
+        let previewContainer = document.getElementById('imagePreview');
+        previewContainer.innerHTML = ""; // Réinitialiser l'aperçu
+        
+        Array.from(event.target.files).forEach(file => {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let imgElement = document.createElement('img');
+                imgElement.src = e.target.result;
+                imgElement.classList.add('preview-img');
+                previewContainer.appendChild(imgElement);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+</script>
+
+{% endblock %}

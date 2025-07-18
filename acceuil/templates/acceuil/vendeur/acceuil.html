@@ -1,0 +1,61 @@
+{% extends './base_vend.html' %}
+{% load static %}
+                   {% block content %}
+                   <div class="container mt-4">
+                    <h2 class="mb-4 text-center">Liste des Annonces</h2>
+                
+                    <!-- Bouton pour ajouter une annonce -->
+                    {% if user.is_authenticated %}
+                        <div class="text-end mb-3">
+                            <a href="{% url 'ajouter_annonce' %}" class="btn btn-success">+ Ajouter une annonce</a>
+                        </div>
+                    {% else %}
+                        <p class="text-center"><a href="{% url 'connexion' %}">Connectez-vous</a> pour publier une annonce.</p>
+                    {% endif %}
+                
+                   
+                    
+                    <div class="row">
+                        {% for annonce in annonces %}
+                            <div class="col-md-4">
+                                <div class="card mb-4">
+                                    {% for image in annonce.images.all %}
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                        <img src="{{ image.image.url }}" class="d-block w-100" alt="Image de l'annonce">
+                                    </div>
+                                   {% endfor %}
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ annonce.titre }}</h5>
+                                        <p class="card-text">{{ annonce.description|truncatewords:15 }}</p>
+                                        <p class="card-text"><strong>Prix :</strong> {{ annonce.prix }}€</p>
+                                        <p class="card-text"><small class="text-muted">Publié le {{ annonce.date_publication|date:"d/m/Y" }}</small></p>
+                                        <p class="card-text"><small class="text-muted">Par {{ annonce.auteur }}</small></p>
+                                        <a href="{% url 'detail_annonce' annonce.id %}" class="btn btn-info btn-sm">Voir détail</a>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-center">Aucune annonce disponible.</p>
+                        {% endfor %}
+                    </div>
+                
+                    <!-- Pagination -->
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            {% if annonces.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page=1">Début</a></li>
+                                <li class="page-item"><a class="page-link" href="?page={{ annonces.previous_page_number }}">Précédent</a></li>
+                            {% endif %}
+                            <li class="page-item disabled"><a class="page-link">Page {{ annonces.number }} / {{ annonces.paginator.num_pages }}</a></li>
+                            {% if annonces.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ annonces.next_page_number }}">Suivant</a></li>
+                                <li class="page-item"><a class="page-link" href="?page={{ annonces.paginator.num_pages }}">Fin</a></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                
+                </div>
+
+
+                   {% endblock content %}

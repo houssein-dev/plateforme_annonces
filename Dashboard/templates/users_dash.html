@@ -1,0 +1,43 @@
+{% extends 'base_dash.html' %}
+{% load static %}
+                {% block content %}
+                    <!-- Content Row -->
+                    <div class="row">
+                        <!-- Page Heading -->
+                        <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+                  
+                        <!-- DataTales Example -->
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">les utilisateurs</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>nom</th>
+                                                <th>prix</th>
+                                                <th>description</th>
+                                                <th>status</th>
+                                                <th>pubier par</th>
+                                                <th>Salary</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for user in users  %}
+                                            <tr>
+                                                <td>{{user.titre}}</td>
+                                                <td>{{user.prix}}</td>
+                                                <td>{{user.description}}</td>
+                                                <td>{{user.status}}</td>
+                                                <td>2011/04/25</td>
+                                                <td>$320,800</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                   {% endblock content %}

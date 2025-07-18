@@ -1,0 +1,54 @@
+{% extends 'base_dash.html' %}
+{% load static %}
+                {% block content %}
+                    <!-- Content Row -->
+                    <div class="row">
+                        <!-- Page Heading -->
+                        <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+    
+                            <div class="col-lg-4 d-none d-lg-block">
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Ajouter / Modifier une catagorie</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <form method="POST" action="" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            {{ form.as_p }}
+                                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <!-- DataTales Example -->
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">les catagories</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th width="20">Name</th>
+                                                
+                                                <th>actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for catg in catagos  %}
+                                            <tr>
+                                                <td>{{catg.nom}}</td>
+                                                
+                                                <td>
+                                                    <a href={% url "update_catag_dash" catg.id %}>Modifier</a>
+                                                    - <a href={% url "delete_catag_dash" catg.id %}>Supprimer</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                   {% endblock content %}

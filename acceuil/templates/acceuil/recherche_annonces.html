@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    {% if query %}
+        <h2 class="text-center">Résultats pour "{{ query }}"</h2>
+    {% else %}
+        <h2 class="text-center">Veuillez entrer un mot-clé pour rechercher</h2>
+    {% endif %}
+
+    <div class="row mt-4">
+        {% if annonces %}
+            {% for annonce in annonces %}
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow">
+                        {% if annonce.images.all %}
+                            <img src="{{ annonce.images.first.image.url }}" class="card-img-top" alt="Image de l'annonce">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ annonce.titre }}</h5>
+                            <p class="card-text">{{ annonce.description|truncatewords:15 }}</p>
+                            <p><strong>Prix :</strong> {{ annonce.prix }} €</p>
+                            <p><small class="text-muted">Publié le {{ annonce.date_publication|date:"d/m/Y" }}</small></p>
+                            <a href="{% url 'detail_annonce' annonce.id %}" class="btn btn-info btn-sm">Voir détail</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center text-muted">Aucune annonce trouvée pour "{{ query }}".</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

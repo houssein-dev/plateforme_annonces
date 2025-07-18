@@ -1,0 +1,71 @@
+{% extends 'base_dash.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    
+    <div class="col-lg-4 d-none d-lg-block">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Ajouter / Modifier une annonce</h6>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-8 col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Annonces récentes</h6>
+                <button class="btn btn-primary d-lg-none" onclick="toggleForm()">Ajouter</button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Prix</th>
+                                <th>Description</th>
+                                <th>Statut</th>
+                                <th>Publié par</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for annonce in annonces %}
+                            <tr>
+                                <td>{{ annonce.titre }}</td>
+                                <td>{{ annonce.prix }}</td>
+                                <td>{{ annonce.description }}</td>
+                                <td>{{ annonce.status }}</td>
+                                <td>{{ annonce.auteur.username }}</td>
+                                <td>
+                                    <a href={% url "update_annonce_dash" annonce.id %}>Modifier</a>
+                                    - <a href={% url "delete_annonce_dash" annonce.id %}>Supprimer</a>
+                                    - <a href={% url "annonce_detail_dash" annonce.id %}>Voir</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleForm() {
+    const form = document.querySelector('.col-lg-4');
+    form.classList.toggle('d-none');
+}
+</script>
+{% endblock content %}

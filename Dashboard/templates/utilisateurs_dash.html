@@ -1,0 +1,66 @@
+                    {% extends 'base_dash.html' %}
+                   {% load static %}
+                   {% block content %}
+                   <div class="row">
+                       <div class="col-lg-4 d-none d-lg-block">
+                           <div class="card shadow mb-4">
+                               <div class="card-header py-3">
+                                   <h6 class="m-0 font-weight-bold text-primary">Ajouter / Modifier un utilisateur</h6>
+                               </div>
+                               <div class="card-body">
+                                   <form method="POST" action="" enctype="multipart/form-data">
+                                       {% csrf_token %}
+                                       {{ form.as_p }}
+                                       <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                   </form>
+                               </div>
+                           </div>
+                       </div>
+                       <div class="col-lg-8 col-12">
+                           <div class="card shadow mb-4">
+                               <div class="card-header py-3 d-flex justify-content-between">
+                                   <h6 class="m-0 font-weight-bold text-primary">les utilisateurs</h6>
+                                   <button class="btn btn-primary d-lg-none" onclick="toggleForm()">Ajouter</button>
+                               </div>
+                               <div class="card-body">
+                                   <div class="table-responsive">
+                                       <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                           <thead>
+                                               <tr>
+                                                   <th>nom complete</th>
+                                                   <th>telephone </th>
+                                                   <th>email</th>
+                                                   <th>role</th>
+                                                   <th>Action</th>
+                                               </tr>
+                                           </thead>
+                                           <tbody>
+                                               {% for user in users %}
+                                               <tr>
+                                                    <td>{{ user.nom }} / {{ user.prenom }}</td>
+                                                    <td>{{ user.phone }}</td>
+                                                    <td>{{ user.email }}</td>
+                                                    <td>{{ user.role }}</td>
+                                                    
+                                                    <td>
+                                                       <a href={% url "update_user_dash" user.id %}>Modifier</a>
+                                                       - <a href={% url "delete_user_dash" user.id %}>Supprimer</a>
+                                                       - <a href={% url "user_detail_dash" user.id %}>Voir</a>
+                                                   </td>
+                                               </tr>
+                                               {% endfor %}
+                                           </tbody>
+                                       </table>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                   <script>
+                   function toggleForm() {
+                       const form = document.querySelector('.col-lg-4');
+                       form.classList.toggle('d-none');
+                   }
+                   </script>
+                   {% endblock content %}
+                   

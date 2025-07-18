@@ -1,0 +1,211 @@
+{% extends base_template %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">{{ annonce.titre }}</h2>
+    <!-- Informations sur l'annonce -->
+    <div class="row">
+        {% for image in annonce.images.all %}
+        <div class="col-md-6 mb-4 d-flex justify-content-center">
+            <img src="{{ image.image.url }}" class="custom-img rounded shadow" alt="Image de l'annonce"
+                 data-bs-toggle="modal" data-bs-target="#imageModal" onclick="changeModalImage(this)">
+        </div>
+        {% empty %}
+        <div class="col-md-12 text-center">
+            <img src= class="custom-img rounded shadow" alt="Aucune image">
+        </div>
+        {% endfor %}
+    </div>
+    <div class="card mt-4">
+        <div class="row"></div>
+         <div class="card-body">        
+            <h5 class="card-title">{{ annonce.titre }}</h5>
+            <p class="card-text">{{ annonce.description }}</p>
+            <p><strong>Prix :</strong> {{ annonce.prix }} €</p>
+            <p><strong>Catégorie :</strong> {{ annonce.categorie.nom }}</p>
+            <p><strong>Publié par :</strong> {{ annonce.auteur }}</p>
+            <p><strong>Date de publication :</strong> {{ annonce.date_publication|date:"d/m/Y" }}</p>          
+            <!-- Bouton pour acheter -->
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#contactModal">
+                Acheter
+            </button>
+         </div>         
+        </div>   
+    <div class="card mt-4">  
+</div>
+      
+   
+
+<!-- Modal pour afficher les coordonnées du vendeur -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="contactModalLabel">
+                    <i class="fas fa-user-circle me-2"></i> Coordonnées du vendeur
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="avatar bg-light rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 50px; height: 50px;">
+                        <i class="fas fa-user fa-2x text-primary"></i>
+                    </div>
+                    <h5 class="m-0">{{ annonce.auteur.nom }}</h5>
+                </div>
+                
+                <div class="contact-info">
+                    <p><i class="fas fa-envelope text-primary me-2"></i> <strong>Email :</strong> {{ annonce.auteur.email }}</p>
+                    <p><i class="fas fa-phone text-success me-2"></i> <strong>Téléphone :</strong> {{ annonce.auteur.phone }}</p>
+                    <!-- <p><i class="fas fa-map-marker-alt text-danger me-2"></i> <strong>Adresse :</strong> {{ annonce.auteur.adresse }}</p> -->
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="mailto:{{ annonce.auteur.email }}" class="btn btn-outline-primary me-2">
+                        <i class="fas fa-envelope"></i> Envoyer un email
+                    </a>
+                    <a href="tel:{{ annonce.auteur.phone }}" class="btn btn-outline-success">
+                        <i class="fas fa-phone"></i> Appeler maintenant
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal pour afficher l'image en plein écran -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-white"><i class="fas fa-image"></i> Affichage de l'image</h5>
+                <div>
+                    <a id="downloadImage" class="btn btn-outline-light me-2" download>
+                        <i class="fas fa-download"></i>
+                    </a>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="modal-body d-flex justify-content-center align-items-center">
+                <div id="zoomContainer" class="zoom-container">
+                    <img id="modalImage" src="" class="img-fluid rounded shadow-lg" alt="Image en grand">
+                </div>
+            </div>
+            <div class="modal-footer border-0 d-flex justify-content-between">
+                <button id="prevImage" class="btn btn-outline-light"><i class="fas fa-arrow-left"></i> Précédent</button>
+                <button id="nextImage" class="btn btn-outline-light">Suivant <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .zoom-container {
+        overflow: hidden;
+        position: relative;
+        cursor: grab;
+    }
+    .zoom-container img {
+        transition: transform 0.3s ease-in-out;
+        max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+    }
+    .modal-fullscreen .modal-content {
+        height: 100vh;
+    }
+</style>
+
+<script>
+    let currentImageIndex = 0;
+    let imagesList = [];
+
+    function changeModalImage(imgElement) {
+        imagesList = [...document.querySelectorAll(".custom-img")];
+        currentImageIndex = imagesList.indexOf(imgElement);
+        updateModalImage();
+        new bootstrap.Modal(document.getElementById('imageModal')).show();
+    }
+
+    function updateModalImage() {
+        if (imagesList.length > 0) {
+            let imgSrc = imagesList[currentImageIndex].src;
+            document.getElementById('modalImage').src = imgSrc;
+            document.getElementById('downloadImage').href = imgSrc;
+        }
+    }
+
+    document.getElementById('prevImage').addEventListener('click', () => {
+        if (currentImageIndex > 0) {
+            currentImageIndex--;
+            updateModalImage();
+        }
+    });
+
+    document.getElementById('nextImage').addEventListener('click', () => {
+        if (currentImageIndex < imagesList.length - 1) {
+            currentImageIndex++;
+            updateModalImage();
+        }
+    });
+
+    // Zoom et déplacement de l'image
+    let zoomContainer = document.getElementById('zoomContainer');
+    let zoomImage = document.getElementById('modalImage');
+
+    zoomContainer.addEventListener('wheel', (event) => {
+        event.preventDefault();
+        let scale = parseFloat(zoomImage.style.transform.replace("scale(", "").replace(")", "")) || 1;
+        scale += event.deltaY * -0.001;
+        scale = Math.min(Math.max(.5, scale), 3);
+        zoomImage.style.transform = `scale(${scale})`;
+    });
+
+    let isDragging = false, startX, startY, scrollLeft, scrollTop;
+    zoomContainer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.pageX - zoomContainer.offsetLeft;
+        startY = e.pageY - zoomContainer.offsetTop;
+        scrollLeft = zoomContainer.scrollLeft;
+        scrollTop = zoomContainer.scrollTop;
+    });
+
+    zoomContainer.addEventListener('mouseup', () => { isDragging = false; });
+    zoomContainer.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        let x = e.pageX - zoomContainer.offsetLeft;
+        let y = e.pageY - zoomContainer.offsetTop;
+        zoomContainer.scrollLeft = scrollLeft - (x - startX);
+        zoomContainer.scrollTop = scrollTop - (y - startY);
+    });
+</script>
+
+
+
+<!-- JavaScript pour afficher l'image cliquée dans le modal -->
+<script>
+    function changeModalImage(imgElement) {
+        document.getElementById('modalImage').src = imgElement.src;
+    }
+</script>
+
+<style>
+    .custom-img {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        object-fit: cover;
+        cursor: pointer; /* Ajoute une indication visuelle de clic */
+        transition: transform 0.2s; /* Effet au survol */
+    }
+    .custom-img:hover {
+        transform: scale(1.05); /* Effet zoom au survol */
+    }
+    .modal-body img {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+{% endblock %}
